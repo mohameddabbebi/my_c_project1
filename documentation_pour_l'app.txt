@@ -1,0 +1,30 @@
+Les fonctionnalités de l'application sont divisées en deux types d'utilisateurs : les développeurs et les clients.
+
+Fonctionnalités pour le Développeur :
+1 : Supprimer une voiture qui est en panne
+2 :Marquer une voiture comme louée
+3 :Ajouter une voiture à louer
+4 :Afficher l'historique des locations
+
+Fonctionnalités pour le Client :
+1 :Louer une voiture
+2 :Afficher les voitures disponible
+3 : Afficher la description d'une voiture
+4 :Retour d'une voiture qui est en panne
+
+Programmes Principaux :
+
+structures :
+date
+location 
+voiture.
+
+Procédures et Fonction:
+une procedure panne pour supprimer une voiture de la liste chainée
+une procedure ajouter qui permet une voiture à louée
+une procedure les_voiture_disponible qui permet d'afficher les voitures disponibles à louée
+une procedure historique qui permet d'afficher l'historique des locations
+une procedure desc qui permet d'afficher la description d'une voiture à louée
+une fonction existe de type booléen qui permer de tester si la voiture à louée ou non
+une procedure panneloc qui permet de supprimer une voiture retourner d'un utilisateur de l'ihistorique des locations
+une procedure loue qui ajoute une location 
