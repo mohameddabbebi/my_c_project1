@@ -1,0 +1,352 @@
+#include<stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+struct date {
+    int jour;
+    int mois;
+    int anne;
+};
+struct voiture {
+    int serie;
+    char marque[20];
+    char etat[20];
+    char description[20];
+    char color[20];
+    struct voiture *suiv;
+};
+struct location{
+    int idclient ;
+    char nomclient[20];
+    struct date datloc;
+    int serie;
+    struct location *suiv;
+};
+void ajouter(struct voiture** l, long s, const char *a, const char *b, const char *c,const char *g) {
+    struct voiture *p = (struct voiture*)malloc(sizeof(struct voiture));
+    p->serie = s;
+    strcpy(p->marque, a);
+    strcpy(p->color, g);
+    strcpy(p->etat, b);
+    strcpy(p->description, c);
+    p->suiv = *l;
+    *l = p;
+}
+void panne(struct voiture **l, int s) {
+    struct voiture *c = *l;
+    struct voiture *c1 = *l;
+    struct voiture *t = NULL;
+    int i = 0;
+    while ((c != NULL) && (c->serie != s)) {
+        c = c->suiv;
+        i++;
+        if (i > 1) {
+            c1 = c1->suiv;
+        }
+    }
+    if (c == NULL) {
+        printf("Il n'y a pas de voiture sous cette série.\n");
+    } else {
+        if (i > 0) {
+            t = c1->suiv;
+            c1->suiv = t->suiv;
+            free(t);
+            t = NULL;
+        } else {
+            *l = c->suiv;
+            free(c);
+            c = NULL;
+        }
+        printf("L'opération est terminée avec succès.\n");
+    }
+}
+void les_voiture_disponible(struct voiture *l) {
+    struct voiture *c=l;
+    while (c != NULL) {
+        if (strcmp(c->etat, "à_louer") == 0) {
+            printf("Série : %ld\n", c->serie);
+            printf("Marque : %s\n", c->marque);
+            printf("couleur : %s\n", c->color);
+            printf("\n");
+        }
+        c = c->suiv;
+    }
+}
+void historique(struct location *l){
+    struct location *c=l;
+    while(c!=NULL){
+        struct date *j = (struct date*)malloc(sizeof(struct date));
+        *j = c->datloc;
+        printf("nom de client est :%s \nid de client :%d\nla seie du voiture est :%d\ndate de location est :%d/%d/%d\n\n\n\n",c->nomclient,c->idclient,c->serie,j->jour,j->mois,j->anne);
+        c=c->suiv;
+    }
+}
+void desc(struct voiture *l,long s){
+    struct voiture *c=l;
+    while((c!=NULL)&&(c->serie!=s)){
+        c=c->suiv;
+    }
+    if(c!=NULL){
+    printf("Marque :%s\n",c->marque);
+    printf("Serie :%d\n",c->serie);
+    printf("Couleur exterieur :%s\n",c->color);
+    printf("voiture en bon etat\n");
+    }
+}
+bool existe(struct voiture **l,long s){
+    struct voiture *c=*l;
+    while(c!=NULL){
+        if(c->serie==s){
+            return true;
+        }
+        c=c->suiv;
+    }
+    return false;
+}
+bool existe1(struct location **l,long s){
+    struct location *c=*l;
+    while(c!=NULL){
+        if(c->serie==s){
+            return true;
+        }
+        c=c->suiv;
+    }
+    return false;
+}
+void panneloc(struct location **l,int s){
+    struct location *c=*l;
+    struct location *c1=*l;
+    while((c!=NULL)&&(c->idclient!=s)){
+        c1=c;
+        c=c->suiv;
+    }
+    if(c==NULL)printf("il n'y a pas de location sous cette identifiant\n");
+    else{
+        c1->suiv=c->suiv;
+        free(c);
+        c=NULL;
+        printf("operation est terminée\n");
+    }
+}
+void loue(struct location **l,struct date d,int id,int s,const char *s1){
+    struct location *p = (struct location*)malloc(sizeof(struct location));
+    p->datloc=d;
+    p->idclient=id;
+    strcpy(p->nomclient,s1);
+    p->serie=s;
+    struct location *c=*l;
+    struct date *j = (struct date*)malloc(sizeof(struct date));
+    int t=0;
+    int i=0;
+    struct location *c1=*l;
+    while((c!=NULL)&&(t==0)){
+        *j=c->datloc;
+        if(((j->anne)<(d.anne))||(((j->anne)=(d.anne))&&(((j->mois)<(d.mois)))||(((j->mois)=(d.mois))&&((j->jour)<=(d.jour))))){
+            t++;
+        }
+        else{
+            c=c->suiv;
+            if(i>0)c1=c1->suiv;
+            i++;
+        }
+    }
+    if(i==0){
+        p->suiv=*l;
+        *l=p;
+    }
+    else{
+        p->suiv=c;
+        c1->suiv=p;
+    }
+}
+int main() {
+    struct voiture *T = NULL;
+    struct location *L = NULL;
+    struct date *j9 = (struct date*)malloc(sizeof(struct date));
+    j9->jour=1;
+    j9->mois=1;
+    j9->anne=2024;
+    loue(&L,*j9,1234,1597,"Mohamed");
+    loue(&L,*j9,18763,1598,"Alex");
+    loue(&L,*j9,18736,1599,"Asma");
+    loue(&L,*j9,18754,1596,"Ammar");
+    loue(&L,*j9,18745,1591,"Ali");
+    long i;
+    for (i = 9111; i < 9122; i++) {
+        int a = i % 8;
+        char g[20];
+        int fg=i%3;
+        if(fg==0)strcpy(g,"noir");
+        if(fg==1)strcpy(g,"Rouge");
+        if(fg==2)strcpy(g,"Jaune");
+        switch(a) {
+            case 0:
+                ajouter(&T, i, "Rolls_Royce", "à_louer", "En_bon_état",g);
+                break;
+            case 1:
+                ajouter(&T, i, "Ferrari", "à_louer", "En_bon_état",g);
+                break;
+            case 2:
+                ajouter(&T, i, "Lamborghini", "à_louer", "En_bon_état",g);
+                break;
+            case 3:
+                ajouter(&T, i, "Bugatti", "à_louer", "En_bon_état",g);
+                break;
+            case 4:
+                ajouter(&T, i, "Porsche", "à_louer", "En_bon_état",g);
+                break;
+            case 5:
+                ajouter(&T, i, "Mercedes-Benz", "à_louer", "En_bon_état",g);
+                break;
+            case 6:
+                ajouter(&T, i, "Jaguar", "à_louer", "En_bon_état",g);
+                break;
+            case 7:
+                ajouter(&T, i, "BMW", "à_louer", "En_bon_état",g);
+                break;
+        }
+    }
+    int a=0;
+    int po;
+    int h6;
+     int h5;
+      bool h1;
+      int c1=0;
+                    int o1;
+                    bool fg;
+                int h2;
+                int o3,az;
+    do{
+    do{
+        printf("           BIENVENUE A SUPER-E-CARS\n     Si vous etes un developpeur cliquez sur 1\n      Si vous etes un client cliquez sur 2\n");
+        scanf("%d",&a);
+        if((a!=1)&&(a!=2))printf("Demande erronée\n");
+    }while((a!=2)&&(a!=1));
+    if(a==1){
+        int c=0;
+        do{
+            do{
+                printf("Cliquez sur le numéro qui accompagne votre commande \n");
+                printf("1 : Supprimer une voiture qui est en panne \n");
+                printf("2 :Marquer une voiture comme louée \n");
+                printf("3 :Ajouter une voiture à louer\n");
+                printf("4 :Afficher l'historique des locations\n");
+                printf("0 :Si votre commande est terminée\n");
+                scanf("%d",&c);
+                if((c!=0)&&(c!=1)&&(c!=2)&&(c!=3)&&(c!=4))printf("Demande erronée\n");
+                switch(c){
+                case 1:
+                    do{
+                        do{
+                        printf("donner la serie du voiture :");
+                        scanf("%d",&h5);
+                        panne(&T,h5);
+                        printf("tapez 0 si l'operation est terminee\ns'il y'a autre voiture en panne tapez 1\n");
+                        scanf("%d",&o1);
+                        if((o1!=1)&&(o1!=0))printf("Demande erronée\n");
+                        }while((o1!=1)&&(o1!=0));
+                    }while(o1!=0);
+                    break;
+                case 2 :
+                        do{
+                            printf("donner la serie du voiture :");
+                            scanf("%d",&h6);
+                            h1=existe(&T,h6)||(existe1(&L,h6));
+                            if(!h1)printf("il y a pas de voiture a louée sous cette serie \n");
+                            else{
+                                char s5[20];
+                                printf("donner le nom de client :");
+                                scanf("%s",&s5);
+                                int y;
+                                printf("donner l'identifiant de client ");
+                                scanf("%d",&y);
+                                struct date *fg = malloc(sizeof(struct date));
+                                printf("donner la date d'operation selon cette ordre\njour\nmois\nannée\n");
+                                int j1=0,s4=0,f2=0;
+                                scanf("%d %d %d",&j1,&s4,&f2);
+                                fg->jour=j1;
+                                fg->mois=s4;
+                                fg->anne=f2;
+                                loue(&L,*fg,y,h6,s5);
+                                panne(&T,h6);
+                            }
+                        }while(!h1);
+                        break;
+                case 3 :
+                    printf("donner la serie de voiture\n");
+                    int h8;
+                    char s8[20];
+                    char c8[20];
+                    scanf("%d",&h8);
+                    printf("donner le nom de la marque\n");
+                    scanf("%s",&s8);
+                    printf("donner sa couleur\n");
+                    scanf("%s",&c8);
+                    ajouter(&T, h8,s8, "à_louer", "En_bon_état",c8);
+                    printf("operation terminée\n");
+                    break;
+                case 4 :
+                    historique(L);
+                    break;
+                }
+            }while((c!=0)&&(c!=1)&&(c!=2)&&(c!=3)&&(c!=4));
+        }while(c!=0);
+    }
+    else{
+        int cf;
+        int za;
+        do{
+        printf("Cliquez sur le numéro qui accompagne votre commande \n");
+        printf("1 :Louer une voiture\n2 :Afficher les voitures disponible\n3 : Afficher la description d'une voiture\n4 :Retour d'une voiture qui est en panne\n");
+        scanf("%d",&za);
+        switch(za){
+            case 1 :
+                do{
+                printf("donner la serie de la voiture :");
+                scanf("%d",&h2);
+                fg=(existe(&T,h2))||(existe1(&L,h2));
+                if(!fg)printf("il y'a pas de voiture a louer sous cette serie\n");
+                }while(!fg);
+                char s2[20];
+                struct date *d2 = (struct date*)malloc(sizeof(struct date));
+                int id2;
+                printf("donner la date \njour\nmois\nannée\n");
+                scanf("%d",&d2->jour);
+                scanf("%d",&d2->mois);
+                scanf("%d",&d2->anne);
+                printf("donner le nom de client\n");
+                scanf("%s",&s2);
+                printf("donner l'identifiant du client\n");
+                scanf("%d",&id2);
+                loue(&L,*d2,id2,h2,s2);
+                panne(&T,h2);
+                break;
+            case 2 :
+                les_voiture_disponible(T);
+                break;
+            case 3 :
+                printf("donner la serie de voiture ");
+                scanf("%d",&o3);
+                if(!((!existe1(&L,o3))&&(existe(&T,o3))))printf("il y a pas de voiture a louée sous cette serie ");
+                else{
+                    desc(T,o3);
+                }
+                break;
+            case 4 :
+                printf("donner ton identifiant\n");
+                scanf("%d",&az);
+                panneloc(&L,az);
+                break;
+        }
+        printf("tapez 0 si vos operations sont terminées\nsinon tapez 1\n");
+        scanf("%d",&cf);
+        }while(cf!=0);
+    }
+    printf("tapez 1 pour retour aux acceill\ntapez 0 pour terminée \n");
+    scanf("%d",&po);
+    if(po==0){
+        printf("SUPER-E-cars vous souhaite une bonne journée\nBy..........\n");
+    }
+    }while(po!=0);
+    return 0;
+}
